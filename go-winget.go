@@ -17,23 +17,17 @@ import (
 var (
 	listSlice      []string
 	packageIDSlice []string
-	// yellow         color.Color
 )
 
 func main() {
-	// clearScreen()
-	// fmt.Println()
-	// waitForString()
-	// waitForString()
 	blue := color.New(color.FgBlue).SprintFunc()
 	for {
-		// clearScreen()
-		// fmt.Println()
 		currentTime := time.Now()
 		fmt.Println(blue("Current time is:", currentTime))
 		fmt.Println()
-		fmt.Println("1. Update list")
-		fmt.Println("2. Update Package")
+		fmt.Println("Update list first.")
+		fmt.Println("1 Update List")
+		fmt.Println("2 Update Package")
 		println()
 		num, _ := readCommand("Enter cmd to continue, x to exit: ")
 
@@ -43,13 +37,10 @@ func main() {
 			fmt.Println("Updating list...")
 			saveToFile()
 			readFile()
-			// printPackageList()
 		case 2:
 			clearScreen()
 			fmt.Println("Update Package...")
 			println()
-			// saveToFile()
-			// readFile()
 			printPackageList()
 			println()
 			num, _ := readCommand("Enter package nr to update, x to exit, r to menu: ")
@@ -138,7 +129,6 @@ func readFile() {
 		}
 
 		if !startsWithLetter(line) {
-			// println("Skip:", j)
 			continue
 		}
 
@@ -203,7 +193,6 @@ func readCommand(str string) (int, string) {
 	for {
 		fmt.Scanln(&userInput)
 		fmt.Println()
-		// break
 		if userInput == "x" {
 			// Print a message
 			fmt.Println("Exiting program.")
@@ -212,7 +201,6 @@ func readCommand(str string) (int, string) {
 			os.Exit(0)
 		}
 		if userInput == "r" {
-			// Print a message
 			fmt.Println("Return to menu.")
 			return -2, ""
 		}
@@ -225,7 +213,6 @@ func readCommand(str string) (int, string) {
 		if err != nil {
 			// Handle error if conversion fails
 			fmt.Println("Error:", err)
-			return -1, ""
 		}
 		return num, userInput
 	}
