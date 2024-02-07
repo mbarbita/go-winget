@@ -15,17 +15,18 @@ import (
 )
 
 var (
-	listSlice      []string
-	packageIDSlice []string
+	listSlice       []string
+	packagesIDSlice []string
 )
 
 func main() {
 	blue := color.New(color.FgBlue).SprintFunc()
+	yellow := color.New(color.FgYellow).SprintFunc()
 	for {
 		currentTime := time.Now()
 		fmt.Println(blue("Current time is:", currentTime))
 		fmt.Println()
-		fmt.Println("Update list first.")
+		fmt.Println(yellow("Update list first."))
 		fmt.Println("1 Update List")
 		fmt.Println("2 Update Package")
 		println()
@@ -48,8 +49,6 @@ func main() {
 			if num >= 0 {
 				executeUpdateCommand(num)
 			}
-		case -1:
-		case -2:
 		default:
 			fmt.Println("Unknown command.")
 		}
@@ -136,7 +135,7 @@ func readFile() {
 		if strings.Contains(line, "Name    Id              Version  Available Source") ||
 			strings.Contains(line, "The following packages have an upgrade available, but require explicit targeting for upgrade:") {
 			listSlice = append(listSlice, line)
-			packageIDSlice = append(packageIDSlice, "")
+			packagesIDSlice = append(packagesIDSlice, "")
 			i++
 			continue
 		}
@@ -147,42 +146,36 @@ func readFile() {
 		//hacks
 		if len(words) > 4 {
 			word4 := strings.Join(words[len(words)-4:len(words)-3], "")
-			if strings.Contains(line, "explicit") ||
-				strings.Contains(line, "Name") {
-				// 3 spaces exactly for next cond
-				word4 = "   "
-			}
 
 			if len(word4) > 2 {
 				listSlice = append(listSlice, line)
-				packageIDSlice = append(packageIDSlice, word4)
+				packagesIDSlice = append(packagesIDSlice, word4)
 			} else {
 				word4 = strings.Join(words[len(words)-5:len(words)-4], "")
 				listSlice = append(listSlice, line)
-				packageIDSlice = append(packageIDSlice, word4)
+				packagesIDSlice = append(packagesIDSlice, word4)
 			}
 			i++
 		}
-
 	}
 
 	// Check for any errors encountered during scanning
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Error reading file:", err)
 	}
-
 }
 
 func printPackageList() {
 	yellow := color.New(color.FgYellow).SprintFunc()
 
-	//display list + package id
+	//display list + packages id
 	for i := range listSlice {
+		//hacks
 		idx := fmt.Sprintf("%*d", 3, i)
-		if packageIDSlice[i] == "" {
-			fmt.Println("   ", listSlice[i], yellow(packageIDSlice[i]))
+		if packagesIDSlice[i] == "" {
+			fmt.Println("   ", listSlice[i], yellow(packagesIDSlice[i]))
 		} else {
-			fmt.Println(yellow(idx), listSlice[i], yellow(packageIDSlice[i]))
+			fmt.Println(yellow(idx), listSlice[i], yellow(packagesIDSlice[i]))
 		}
 	}
 }
@@ -194,7 +187,6 @@ func readCommand(str string) (int, string) {
 		fmt.Scanln(&userInput)
 		fmt.Println()
 		if userInput == "x" {
-			// Print a message
 			fmt.Println("Exiting program.")
 
 			// Exit the program with status code 0
@@ -202,10 +194,10 @@ func readCommand(str string) (int, string) {
 		}
 		if userInput == "r" {
 			fmt.Println("Return to menu.")
-			return -2, ""
+			return -1, ""
 		}
 		if startsWithLetter(userInput) {
-			return -1, ""
+			return -2, ""
 		}
 
 		// Convert string to integer
@@ -219,9 +211,8 @@ func readCommand(str string) (int, string) {
 }
 
 func executeUpdateCommand(num int) {
-	// Execute external command
-	fmt.Println("Executing: winget update", packageIDSlice[num])
-	cmd := exec.Command("winget", "update", packageIDSlice[num])
+	fmt.Println("Executing: winget update", packagesIDSlice[num])
+	cmd := exec.Command("winget", "update", packagesIDSlice[num])
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
