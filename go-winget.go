@@ -23,7 +23,7 @@ var (
 
 func main() {
 	clearScreen()
-	fmt.Println(blue("Current time is:", time.Now()))
+	fmt.Println(blue("Current time is: ", time.Now()))
 	fmt.Println()
 	fmt.Println(yellow("Update list first."))
 	fmt.Println()
@@ -48,7 +48,7 @@ func main() {
 			fmt.Println()
 			printPackageList()
 			fmt.Println()
-			num, _ := readCommand(yellow("Enter package nr to update, x to exit, r to menu: "))
+			num, _ := readCommand(yellow("Enter package number to update, x to exit, r to menu: "))
 			fmt.Println()
 			if num >= 0 {
 				executeUpdateCommand(num)
@@ -85,7 +85,7 @@ func startsWithLetter(s string) bool {
 func saveToFile() {
 	file, err := os.Create("list.txt")
 	if err != nil {
-		fmt.Println(yellow("Error creating file:", err))
+		fmt.Println(yellow("Error creating file: ", err))
 		return
 	}
 	defer file.Close()
@@ -97,7 +97,7 @@ func saveToFile() {
 
 	err = cmd.Run()
 	if err != nil {
-		fmt.Println(yellow("Error executing command:", err))
+		fmt.Println(yellow("Error executing command: ", err))
 	}
 }
 
@@ -108,7 +108,7 @@ func readFile() {
 	// Open the text file
 	file, err := os.Open("list.txt")
 	if err != nil {
-		fmt.Println(yellow("Error opening file:", err))
+		fmt.Println(yellow("Error opening file: ", err))
 		return
 	}
 	defer file.Close()
@@ -160,7 +160,7 @@ func readFile() {
 
 	// Check for any errors encountered during scanning
 	if err := scanner.Err(); err != nil {
-		fmt.Println(yellow("Error reading file:", err))
+		fmt.Println(yellow("Error reading file: ", err))
 	}
 }
 
@@ -201,7 +201,7 @@ func readCommand(str string) (int, string) {
 		num, err := strconv.Atoi(userInput)
 		if err != nil {
 			// Handle error if conversion fails
-			fmt.Println(yellow("Error:", err))
+			fmt.Println(yellow("Error: ", err))
 			return -1, ""
 		} else {
 			return num, userInput
@@ -210,7 +210,7 @@ func readCommand(str string) (int, string) {
 }
 
 func executeUpdateCommand(num int) {
-	fmt.Println(yellow("Executing: winget update", packagesIDSlice[num]))
+	fmt.Println(yellow("Executing: winget update ", packagesIDSlice[num]))
 
 	//PROD
 	cmd := exec.Command("winget", "update", packagesIDSlice[num])
@@ -224,6 +224,8 @@ func executeUpdateCommand(num int) {
 
 	err := cmd.Run()
 	if err != nil {
-		fmt.Println(yellow("Error executing command:", err))
+		fmt.Println(yellow("Error executing command: ", err))
 	}
+
+	fmt.Println()
 }
