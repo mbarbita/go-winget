@@ -17,12 +17,12 @@ import (
 var (
 	listSlice       []string
 	packagesIDSlice []string
+	yellow          = color.New(color.FgYellow).SprintFunc()
+	blue            = color.New(color.FgBlue).SprintFunc()
 )
 
 func main() {
 	clearScreen()
-	blue := color.New(color.FgBlue).SprintFunc()
-	yellow := color.New(color.FgYellow).SprintFunc()
 	fmt.Println(blue("Current time is:", time.Now()))
 	fmt.Println()
 	fmt.Println(yellow("Update list first."))
@@ -43,11 +43,7 @@ func main() {
 			fmt.Println()
 			saveToFile()
 			readFile()
-			// println()
-			// printPackageList()
-			// println()
 		case 2:
-			// clearScreen()
 			fmt.Println(yellow("Update Package..."))
 			fmt.Println()
 			printPackageList()
@@ -56,8 +52,6 @@ func main() {
 			fmt.Println()
 			if num >= 0 {
 				executeUpdateCommand(num)
-				// listSlice = nil
-				// packagesIDSlice = nil
 				saveToFile()
 				readFile()
 			}
@@ -81,15 +75,6 @@ func clearScreen() {
 	}
 }
 
-// func waitForString() {
-// 	fmt.Print("Press Enter to continue...")
-// 	var userInput string
-// 	for {
-// 		fmt.Scanln(&userInput)
-// 		break
-// 	}
-// }
-
 func startsWithLetter(s string) bool {
 	if len(s) == 0 {
 		return false
@@ -98,7 +83,6 @@ func startsWithLetter(s string) bool {
 }
 
 func saveToFile() {
-	yellow := color.New(color.FgYellow).SprintFunc()
 	file, err := os.Create("list.txt")
 	if err != nil {
 		fmt.Println(yellow("Error creating file:", err))
@@ -118,7 +102,6 @@ func saveToFile() {
 }
 
 func readFile() {
-	yellow := color.New(color.FgYellow).SprintFunc()
 	listSlice = nil
 	packagesIDSlice = nil
 
@@ -182,8 +165,6 @@ func readFile() {
 }
 
 func printPackageList() {
-	yellow := color.New(color.FgYellow).SprintFunc()
-
 	//display list + packages id
 	for i := range listSlice {
 		//hacks
@@ -197,7 +178,6 @@ func printPackageList() {
 }
 
 func readCommand(str string) (int, string) {
-	yellow := color.New(color.FgYellow).SprintFunc()
 	fmt.Print(str)
 	var userInput string
 	for {
@@ -214,7 +194,7 @@ func readCommand(str string) (int, string) {
 			return -1, ""
 		}
 		if startsWithLetter(userInput) {
-			return -2, ""
+			return -1, ""
 		}
 
 		// Convert string to integer
@@ -222,13 +202,14 @@ func readCommand(str string) (int, string) {
 		if err != nil {
 			// Handle error if conversion fails
 			fmt.Println(yellow("Error:", err))
+			return -1, ""
+		} else {
+			return num, userInput
 		}
-		return num, userInput
 	}
 }
 
 func executeUpdateCommand(num int) {
-	yellow := color.New(color.FgYellow).SprintFunc()
 	fmt.Println(yellow("Executing: winget update", packagesIDSlice[num]))
 
 	//PROD
